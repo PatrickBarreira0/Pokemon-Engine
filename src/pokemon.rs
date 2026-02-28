@@ -1,4 +1,6 @@
 // src/pokemon.rs
+use crate::moves::MoveEffect;
+use crate::types::Status;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum PokemonType {
@@ -13,6 +15,7 @@ pub struct Move {
     pub name: String,
     pub power: u32,
     pub move_type: PokemonType,
+    pub effects: Vec<MoveEffect>,
 }
 
 #[derive(Debug, Clone)]
@@ -23,6 +26,7 @@ pub struct Pokemon {
     pub current_hp: u32,
     pub speed: u32,
     pub moves: Vec<Move>,
+    pub status: Option<Status>,
 }
 
 impl Pokemon {
@@ -34,6 +38,7 @@ impl Pokemon {
             current_hp: max_hp,
             speed,
             moves,
+            status: None
         }
     }
 

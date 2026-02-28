@@ -1,10 +1,13 @@
 //modules
 mod pokemon;
 mod engine;
-
+mod moves;
+mod types;
 //imports
 use pokemon::{Move, Pokemon, PokemonType};
 use engine::BattleEngine;
+use moves::MoveEffect;
+use types::Status;
 use std::io::{self, Write};
 
 fn main() {
@@ -12,21 +15,28 @@ fn main() {
         name: "Tackle".to_string(),
         power: 10,
         move_type: PokemonType::Normal,
+        effects: vec![MoveEffect::Damage],
     };
     let vine_whip = Move {
         name: "Vine Whip".to_string(),
         power: 10,
         move_type: PokemonType::Grass,
+        effects: vec![MoveEffect::Damage],
     };
     let ember = Move {
         name: "Ember".to_string(),
         power: 10,
         move_type: PokemonType::Fire,
+        effects: vec![
+            MoveEffect::Damage,
+            MoveEffect::ApplyStatus { status: Status::Burn, chance: 0.1 },
+        ]
     };
     let water_gun = Move {
         name: "Water Gun".to_string(),
         power: 10,
         move_type: PokemonType::Water,
+        effects: vec![MoveEffect::Damage],
     };
 
     let bulbasaur = Pokemon::new(
