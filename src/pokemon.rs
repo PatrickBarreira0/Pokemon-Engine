@@ -1,8 +1,11 @@
 // src/pokemon.rs
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum PokemonType {
     Normal,
+    Fire,
+    Water,
+    Grass,
 }
 
 #[derive(Debug, Clone)]
@@ -15,6 +18,7 @@ pub struct Move {
 #[derive(Debug, Clone)]
 pub struct Pokemon {
     pub name: String,
+    pub primary_type: PokemonType,
     pub max_hp: u32,
     pub current_hp: u32,
     pub speed: u32,
@@ -22,9 +26,10 @@ pub struct Pokemon {
 }
 
 impl Pokemon {
-    pub fn new(name: &str, max_hp: u32, speed: u32, moves: Vec<Move>) -> Self {
+    pub fn new(name: &str, p_type: PokemonType, max_hp: u32, speed: u32, moves: Vec<Move>) -> Self {
         Self {
             name: name.to_string(),
+            primary_type: p_type,
             max_hp,
             current_hp: max_hp,
             speed,

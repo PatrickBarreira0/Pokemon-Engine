@@ -13,7 +13,22 @@ fn main() {
         power: 10,
         move_type: PokemonType::Normal,
     };
-
+    let vine_whip = Move {
+        name: "Vine Whip".to_string(),
+        power: 10,
+        move_type: PokemonType::Grass,
+    };
+    let ember = Move {
+        name: "Ember".to_string(),
+        power: 10,
+        move_type: PokemonType::Fire,
+    };
+    let water_gun = Move {
+        name: "Water Gun".to_string(),
+        power: 10,
+        move_type: PokemonType::Water,
+    };
+    
     // Bulbasaur Speed: 45 | Charmander Speed: 65
     let bulbasaur = Pokemon::new("Bulbasaur", 45, 45, vec![tackle.clone()]);
     let charmander = Pokemon::new("Charmander", 39, 65, vec![tackle.clone()]);
