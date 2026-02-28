@@ -28,14 +28,22 @@ impl BattleEngine {
 
         let used_move = &attacker.moves[move_index];
 
-        let multiplier = Self::get_type_multiplier(&used_move.move_type, &defender.primary_type);
+        let type_multiplier = Self::get_type_multiplier(&used_move.move_type, &defender.primary_type);
+        
+        let stab_multiplier = if used_move.move_type == attacker.primary_type {
+            1.5
+        } else {
+            1.0
+        };
        
-        let damage = (used_move.power as f32 * multiplier) as u32;
+        let damage = (used_move.power as f32 * type_multiplier * stab_multiplier) as u32;
 
         println!("\n> {} used {}!", attacker.name, used_move.name);
 
-        if multiplier > 1.0 { println!("It's super effective!"); }
-        else if multiplier < 1.0 { println!("It's not very effective..."); }
+        if type_multiplier > 1.0 { println!("It's super effective!"); }
+        else if type_multiplier < 1.0 { println!("It's not very effective..."); }
+
+        if stab_multiplier > 1.0 { println!("*STAB bonus applied!*"); }
 
         defender.take_damage(damage);
         println!("> {} took {} damage!", defender.name, damage);

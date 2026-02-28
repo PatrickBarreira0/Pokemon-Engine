@@ -83,6 +83,7 @@ fn main() {
                         println!("\n*** {} fainted! You lose! ***", engine.player.name);
                         break;
                     }
+                    
                 } else { // opponent goes first
                     BattleEngine::execute_move(&mut engine.opponent, &mut engine.player, opponent_move_index);
                     if engine.player.is_fainted() {
