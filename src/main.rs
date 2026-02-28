@@ -34,14 +34,14 @@ fn main() {
         PokemonType::Grass,
         45,
         45,
-        vec![vine_whip],
+        vec![vine_whip, tackle.clone()],
     );
     let charmander = Pokemon::new(
         "Charmander",
         PokemonType::Fire,
         39,
         65,
-        vec![ember],
+        vec![ember, tackle.clone()],
     );
 
     let mut engine = BattleEngine::new(bulbasaur, charmander);
@@ -51,43 +51,55 @@ fn main() {
     loop {
         println!("\n--- NEW TURN ---");
         println!("What will {} do?", engine.player.name);
-        println!("1. Tackle");
+
+        for (index, pokemon_move) in engine.player.moves.iter().enumerate() { // index is position in the array, pokemon_move is the move at that position
+            println!("{}. {}", index + 1, pokemon_move.name); // +1 because arrays start at 0 but humans start at 1
+        }
         print!("Choose: ");
         io::stdout().flush().unwrap(); 
 
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
 
-        if input.trim() == "1" {
-            // Determine who is faster
-            let player_is_faster = engine.player.speed >= engine.opponent.speed;
+        let parsed_input = input.trim().parse::<usize>();
 
-            if player_is_faster {
-                // Player goes first
-                BattleEngine::execute_move(&mut engine.player, &mut engine.opponent, 0);
-                if engine.opponent.is_fainted() {
-                    println!("\n*** {} fainted! You win! ***", engine.opponent.name);
-                    break;
+        if let Ok(choice) = parsed_input { // checks if the input is valid 
+            if choice > 0 && choice <= engine.player.moves.len() {
+                
+                let player_move_index = choice - 1; // -1 to get the index of the move
+                let opponent_move_index = 0; // ai always use first move for now;
+
+                let player_is_faster = engine.player.speed >= engine.opponent.speed;
+
+                if player_is_faster { // player goes first
+                    BattleEngine::execute_move(&mut engine.player, &mut engine.opponent, player_move_index);
+                    if engine.opponent.is_fainted() {
+                        println!("\n*** {} fainted! You win! ***", engine.opponent.name);
+                        break;
+                    } // opponent retaliates
+
+                    BattleEngine::execute_move(&mut engine.opponent, &mut engine.player, opponent_move_index);
+                    if engine.player.is_fainted() {
+                        println!("\n*** {} fainted! You lose! ***", engine.player.name);
+                        break;
+                    }
+                } else { // opponent goes first
+                    BattleEngine::execute_move(&mut engine.opponent, &mut engine.player, opponent_move_index);
+                    if engine.player.is_fainted() {
+                        println!("\n*** {} fainted! You lose! ***", engine.player.name);
+                        break;
+                    } // player retaliates
+                    BattleEngine::execute_move(&mut engine.player, &mut engine.opponent, player_move_index);
+                    if engine.opponent.is_fainted() {
+                        println!("\n*** {} fainted! You win! ***", engine.opponent.name);
+                        break;
+                    }
                 }
-                // Opponent retaliates
-                BattleEngine::execute_move(&mut engine.opponent, &mut engine.player, 0);
             } else {
-                // Opponent goes first (This will happen because Charmander is 65!)
-                BattleEngine::execute_move(&mut engine.opponent, &mut engine.player, 0);
-                if engine.player.is_fainted() {
-                    println!("\n*** {} fainted! You lose! ***", engine.player.name);
-                    break;
-                }
-                // Player retaliates
-                BattleEngine::execute_move(&mut engine.player, &mut engine.opponent, 0);
+                println!("Invalid move number! Choose a number from the list.");
             }
-
-            // Check if player fainted after the second move
-            if engine.player.is_fainted() || engine.opponent.is_fainted() {
-                if engine.player.is_fainted() { println!("\n*** You lost! ***"); }
-                else { println!("\n*** You won! ***"); }
-                break;
-            }
+        } else {
+            println!("Please enter a valid number!");
         }
     }
 }
