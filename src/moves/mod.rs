@@ -1,5 +1,6 @@
 // table of contents inside moves folder and shared types
 pub mod registry;
+use crate::types::Status;
 
 #[derive(Debug, Clone)]
 pub enum MoveEffect {
@@ -21,14 +22,6 @@ pub enum MoveEffect {
     },
 }
 
-#[derive(Debug, Clone)]
-pub enum Status {
-    Burn,
-    Paralysis,
-    Poison,
-    Freeze,
-    Sleep,
-}
 
 #[derive(Debug, Clone)]
 pub enum Stat {
