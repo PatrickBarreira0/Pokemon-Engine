@@ -28,10 +28,21 @@ fn main() {
         power: 10,
         move_type: PokemonType::Water,
     };
-    
-    // Bulbasaur Speed: 45 | Charmander Speed: 65
-    let bulbasaur = Pokemon::new("Bulbasaur", 45, 45, vec![tackle.clone()]);
-    let charmander = Pokemon::new("Charmander", 39, 65, vec![tackle.clone()]);
+
+    let bulbasaur = Pokemon::new(
+        "Bulbasaur",
+        PokemonType::Grass,
+        45,
+        45,
+        vec![vine_whip],
+    );
+    let charmander = Pokemon::new(
+        "Charmander",
+        PokemonType::Fire,
+        39,
+        65,
+        vec![ember],
+    );
 
     let mut engine = BattleEngine::new(bulbasaur, charmander);
 

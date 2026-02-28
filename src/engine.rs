@@ -1,4 +1,4 @@
-use crate::pokemon::Pokemon;
+use crate::pokemon::{Pokemon, PokemonType};
 
 pub struct BattleEngine {
     pub player: Pokemon,
