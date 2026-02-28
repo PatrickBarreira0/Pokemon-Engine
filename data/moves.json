@@ -1,0 +1,6 @@
+[
+    { "name": "Tackle",       "type": "Normal",   "power": 40, "accuracy": 100, "pp": 35 },
+    { "name": "Vine Whip",    "type": "Grass",    "power": 45, "accuracy": 100, "pp": 25 },
+    { "name": "Thunder Wave", "type": "Electric", "power": 0,  "accuracy": 90,  "pp": 20 },
+    { "name": "Ember",        "type": "Fire",     "power": 40, "accuracy": 100, "pp": 25 }
+  ]
