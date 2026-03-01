@@ -4,6 +4,8 @@ pub use engine::BattleEngine;
 use crate::pokemon::Pokemon;
 use std::io::{self, Write};
 
+// orchestrates the turn order and battle loop, deciding who moves when and when the battle ends
+
 pub fn run_battle(player: Pokemon, opponent: Pokemon) {
     let mut engine = BattleEngine::new(player, opponent);
     println!("Battle start! {} vs {}", engine.player.name, engine.opponent.name);

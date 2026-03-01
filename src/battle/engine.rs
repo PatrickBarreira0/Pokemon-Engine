@@ -1,7 +1,8 @@
 use crate::pokemon::{Pokemon, PokemonType};
-use crate::moves::MoveEffect;
+use crate::moves::{MoveEffect, Stat, StatTarget};
 use crate::types::Status;
 
+// handles all damage calculation, move execution, and status effect processing for individual pokemon actions
 pub struct BattleEngine {
     pub player: Pokemon,
     pub opponent: Pokemon,
@@ -10,6 +11,26 @@ pub struct BattleEngine {
 impl BattleEngine {
     pub fn new(player: Pokemon, opponent: Pokemon) -> Self {
         Self { player, opponent }
+    }
+
+    fn stage_to_multiplier(stage: i32) -> f32 {
+        match stage {
+            -6 => 0.25,
+            -5 => 0.28,
+            -4 => 0.33,
+            -3 => 0.40,
+            -2 => 0.50,
+            -1 => 0.67,
+             0 => 1.00,
+             1 => 1.50,
+             2 => 2.00,
+             3 => 2.50,
+             4 => 3.00,
+             5 => 3.50,
+             6 => 4.00,
+
+            _ => 1.00,
+        }
     }
 
     pub fn get_type_multiplier(attacker_type: &PokemonType, defender_type: &PokemonType) -> f32 {
@@ -59,8 +80,13 @@ impl BattleEngine {
                     } else {
                         1.0
                     };
+                    let attack_multiplier  = Self::stage_to_multiplier(attacker.stat_stages.attack);
+                    let defense_multiplier = Self::stage_to_multiplier(defender.stat_stages.defense);
+                    let effective_attack   = attacker.attack as f32 * attack_multiplier;
+                    let effective_defense  = defender.defense as f32 * defense_multiplier;
+                    
                     let damage = (used_move.power as f32
-                        * (attacker.attack as f32 / defender.defense as f32)
+                        * (effective_attack / effective_defense)
                         * type_multiplier
                         * stab_multiplier) as u32;
 
@@ -85,8 +111,14 @@ impl BattleEngine {
                     }
                 }
 
-                MoveEffect::ModifyStat { .. } => {
-                    println!("> Stat modification not yet implemented.");
+                MoveEffect::ModifyStat { target, stat, stages } => {
+                    let target_pokemon = match target {
+                        StatTarget::Opponent => &mut *defender,
+                        StatTarget::User     => &mut *attacker,
+                    };
+                    target_pokemon.stat_stages.modify(stat, *stages);
+                    let direction = if *stages > 0 { "rose" } else { "fell" };
+                    println!("> {}'s {:?} {}!", target_pokemon.name, stat, direction);
                 }
                 MoveEffect::Heal { .. } => {
                     println!("> Healing not yet implemented.");
