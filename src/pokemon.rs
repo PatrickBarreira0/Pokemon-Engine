@@ -25,18 +25,22 @@ pub struct Pokemon {
     pub primary_type: PokemonType,
     pub max_hp: u32,
     pub current_hp: u32,
+    pub attack: u32,
+    pub defense: u32,
     pub speed: u32,
     pub moves: Vec<Move>,
     pub status: Option<Status>,
 }
 
 impl Pokemon {
-    pub fn new(name: &str, p_type: PokemonType, max_hp: u32, speed: u32, moves: Vec<Move>) -> Self {
+    pub fn new(name: &str, p_type: PokemonType, max_hp: u32, attack: u32, defense: u32, speed: u32, moves: Vec<Move>) -> Self {
         Self {
             name: name.to_string(),
             primary_type: p_type,
             max_hp,
             current_hp: max_hp,
+            attack,
+            defense,
             speed,
             moves,
             status: None

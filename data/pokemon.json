@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Bulbasaur",
+        "type": "Grass",
+        "hp": 45,
+        "attack": 49,
+        "defense": 49,
+        "speed": 45,
+        "moves": ["Vine Whip", "Tackle"]
+    },
+    {
+        "name": "Charmander",
+        "type": "Fire",
+        "hp": 39,
+        "attack": 52,
+        "defense": 43,
+        "speed": 65,
+        "moves": ["Ember", "Tackle"]
+    },
+    {
+        "name": "Squirtle",
+        "type": "Water",
+        "hp": 44,
+        "attack": 48,
+        "defense": 65,
+        "speed": 43,
+        "moves": ["Water Gun", "Tackle"]
+    }
+]

@@ -1,57 +1,43 @@
-//modules
+// modules
 mod pokemon;
 mod engine;
 mod moves;
 mod types;
-//imports
-use pokemon::{Move, Pokemon, PokemonType};
+
+// imports
+use pokemon::Pokemon;
+use pokemon::PokemonType;
 use engine::BattleEngine;
-use moves::MoveEffect;
-use types::Status;
+use moves::loader::load_moves;
 use std::io::{self, Write};
 
 fn main() {
-    let tackle = Move {
-        name: "Tackle".to_string(),
-        power: 10,
-        move_type: PokemonType::Normal,
-        effects: vec![MoveEffect::Damage],
-    };
-    let vine_whip = Move {
-        name: "Vine Whip".to_string(),
-        power: 10,
-        move_type: PokemonType::Grass,
-        effects: vec![MoveEffect::Damage],
-    };
-    let ember = Move {
-        name: "Ember".to_string(),
-        power: 10,
-        move_type: PokemonType::Fire,
-        effects: vec![
-            MoveEffect::Damage,
-            MoveEffect::ApplyStatus { status: Status::Burn, chance: 0.1 },
-        ]
-    };
-    let water_gun = Move {
-        name: "Water Gun".to_string(),
-        power: 10,
-        move_type: PokemonType::Water,
-        effects: vec![MoveEffect::Damage],
-    };
+    let all_moves = load_moves("data/moves.json");
 
     let bulbasaur = Pokemon::new(
         "Bulbasaur",
         PokemonType::Grass,
         45,
+        49,
+        49,
         45,
-        vec![vine_whip, tackle.clone()],
+        vec![
+            all_moves.get("Vine Whip").expect("Vine Whip not found in moves.json").clone(),
+            all_moves.get("Tackle").expect("Tackle not found in moves.json").clone(),
+        ],
     );
+
     let charmander = Pokemon::new(
         "Charmander",
         PokemonType::Fire,
         39,
+        52,
+        43,
         65,
-        vec![ember, tackle.clone()],
+        vec![
+            all_moves.get("Ember").expect("Ember not found in moves.json").clone(),
+            all_moves.get("Tackle").expect("Tackle not found in moves.json").clone(),
+        ],
     );
 
     let mut engine = BattleEngine::new(bulbasaur, charmander);
