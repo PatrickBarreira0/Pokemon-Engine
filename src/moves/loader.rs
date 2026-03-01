@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use std::collections::HashMap;
-use crate::moves::{MoveEffect, parse_category};
+use crate::moves::parse_category;
 use crate::moves::registry::build_move_effect_registry;
 use crate::pokemon::Move;
 

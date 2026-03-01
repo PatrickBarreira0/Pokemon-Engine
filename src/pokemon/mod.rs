@@ -102,26 +102,6 @@ pub fn nature_multiplier(nature: &Nature, stat: &Stat) -> f32 {
 }
 
 #[derive(Debug, Clone)]
-pub struct IVs {
-    pub hp: u32,
-    pub attack: u32,
-    pub defense: u32,
-    pub sp_attack: u32,
-    pub sp_defense: u32,
-    pub speed: u32,
-}
-
-#[derive(Debug, Clone)]
-pub struct EVs {
-    pub hp: u32,
-    pub attack: u32,
-    pub defense: u32,
-    pub sp_attack: u32,
-    pub sp_defense: u32,
-    pub speed: u32,
-}
-
-#[derive(Debug, Clone)]
 pub struct Move {
     pub name: String,
     pub power: u32,

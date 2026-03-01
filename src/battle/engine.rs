@@ -1,5 +1,5 @@
-use crate::pokemon::{Pokemon, PokemonType};
-use crate::moves::{MoveEffect, MoveCategory, Stat, StatTarget};
+use crate::pokemon::Pokemon;
+use crate::moves::{MoveEffect, MoveCategory, StatTarget};
 use crate::types::{Status, get_type_multiplier};
 
 // handles all damage calculation, move execution, and status effect processing for individual pokemon actions

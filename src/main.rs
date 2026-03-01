@@ -19,6 +19,8 @@ fn main() {
         .find(|p| p.name == "Charmander")
         .expect("Charmander not found in pokemon.json")
         .clone();
-    
+    println!("{} — HP: {}, Atk: {}, Def: {}, SpA: {}, SpD: {}, Spe: {}", 
+    bulbasaur.name, bulbasaur.max_hp, bulbasaur.attack, bulbasaur.defense,
+    bulbasaur.sp_attack, bulbasaur.sp_defense, bulbasaur.speed);
     battle::run_battle(bulbasaur, charmander);
 }
