@@ -2,6 +2,8 @@
 use crate::moves::MoveEffect;
 use crate::types::Status;
 
+pub mod loader;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum PokemonType {
     Normal,

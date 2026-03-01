@@ -5,40 +5,23 @@ mod moves;
 mod types;
 
 // imports
-use pokemon::Pokemon;
-use pokemon::PokemonType;
 use engine::BattleEngine;
-use moves::loader::load_moves;
+use pokemon::loader::load_pokemon;
 use std::io::{self, Write};
 
 fn main() {
-    let all_moves = load_moves("data/moves.json");
 
-    let bulbasaur = Pokemon::new(
-        "Bulbasaur",
-        PokemonType::Grass,
-        45,
-        49,
-        49,
-        45,
-        vec![
-            all_moves.get("Vine Whip").expect("Vine Whip not found in moves.json").clone(),
-            all_moves.get("Tackle").expect("Tackle not found in moves.json").clone(),
-        ],
-    );
+    let all_pokemon = load_pokemon("data/pokemon.json", "data/moves.json");
 
-    let charmander = Pokemon::new(
-        "Charmander",
-        PokemonType::Fire,
-        39,
-        52,
-        43,
-        65,
-        vec![
-            all_moves.get("Ember").expect("Ember not found in moves.json").clone(),
-            all_moves.get("Tackle").expect("Tackle not found in moves.json").clone(),
-        ],
-    );
+    let bulbasaur = all_pokemon.iter()
+        .find(|p| p.name == "Bulbasaur")
+        .expect("Bulbasaur not found in pokemon.json")
+        .clone();
+
+    let charmander = all_pokemon.iter()
+        .find(|p| p.name == "Charmander")
+        .expect("Charmander not found in pokemon.json")
+        .clone();
 
     let mut engine = BattleEngine::new(bulbasaur, charmander);
 
