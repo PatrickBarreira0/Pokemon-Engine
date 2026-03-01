@@ -2,7 +2,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use crate::moves::MoveEffect;
 use crate::moves::registry::build_move_effect_registry;
-use crate::pokemon::{Move, PokemonType};
+use crate::pokemon::{Move};
 
 #[derive(Debug, Deserialize)]
 pub struct MoveData {
@@ -31,7 +31,7 @@ pub fn load_moves(path: &str) -> HashMap<String, Move> {
             .cloned()
             .unwrap_or_default();
 
-        let move_type = parse_type(&move_data.move_type);
+        let move_type = crate::types::parse_type(&move_data.move_type);
 
         let complete_move = Move {
             name: move_data.name.clone(),
@@ -44,15 +44,4 @@ pub fn load_moves(path: &str) -> HashMap<String, Move> {
     }
 
     moves
-}
-
-fn parse_type(type_str: &str) -> PokemonType {
-    match type_str {
-        "Normal"   => PokemonType::Normal,
-        "Fire"     => PokemonType::Fire,
-        "Water"    => PokemonType::Water,
-        "Grass"    => PokemonType::Grass,
-        "Electric" => PokemonType::Electric,
-        _          => panic!("Unknown type in moves.json: {}", type_str), // catch typos early
-    }
 }

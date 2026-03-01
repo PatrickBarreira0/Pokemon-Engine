@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use crate::pokemon::{Pokemon, PokemonType};
+use crate::pokemon::{Pokemon};
 use crate::moves::loader::load_moves;
 
 #[derive(Debug, Deserialize)]
@@ -15,7 +15,6 @@ pub struct PokemonData {
 }
 
 pub fn load_pokemon(pokemon_path: &str, moves_path: &str) -> Vec<Pokemon> {
-
     let all_moves = load_moves(moves_path);
 
     let file_content = std::fs::read_to_string(pokemon_path)
@@ -34,7 +33,7 @@ pub fn load_pokemon(pokemon_path: &str, moves_path: &str) -> Vec<Pokemon> {
                 .clone()
         }).collect();
 
-        let pokemon_type = parse_type(&data.pokemon_type);
+        let pokemon_type = crate::types::parse_type(&data.pokemon_type);
 
         let pokemon = Pokemon::new(
             &data.name,
@@ -50,15 +49,4 @@ pub fn load_pokemon(pokemon_path: &str, moves_path: &str) -> Vec<Pokemon> {
     }
 
     pokemon_list
-}
-
-fn parse_type(type_str: &str) -> PokemonType {
-    match type_str {
-        "Normal"   => PokemonType::Normal,
-        "Fire"     => PokemonType::Fire,
-        "Water"    => PokemonType::Water,
-        "Grass"    => PokemonType::Grass,
-        "Electric" => PokemonType::Electric,
-        _          => panic!("Unknown type in pokemon.json: {}", type_str),
-    }
 }
