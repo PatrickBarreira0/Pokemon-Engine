@@ -29,6 +29,12 @@ pub fn run_battle(player: Pokemon, opponent: Pokemon) {
             if choice > 0 && choice <= engine.player.moves.len() {
 
                 let player_move_index = choice - 1; // -1 to get the index of the move
+                
+                if engine.player.moves[player_move_index].current_pp == 0 {
+                    println!("> {} has no PP left! Choose a different move.", engine.player.moves[player_move_index].name);
+                    continue; // restart the loop — player picks again, opponent doesn't move
+                }
+
                 let opponent_move_index = 0; // ai always uses first move for now
 
                 let player_is_faster = engine.player.speed >= engine.opponent.speed;

@@ -59,11 +59,6 @@ impl BattleEngine {
             return;
         }
 
-        if attacker.moves[move_index].current_pp == 0 {
-            println!("> {} has no PP left for {}!", attacker.name, attacker.moves[move_index].name);
-            return;
-        }
-
         if let Some(Status::Paralysis) = &attacker.status {
             let roll: f32 = rand::random();
             if roll < 0.25 {
