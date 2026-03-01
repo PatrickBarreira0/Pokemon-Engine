@@ -1,6 +1,9 @@
 // table of contents inside moves folder and shared types
 pub mod registry;
+pub mod loader;
+
 use crate::types::Status;
+
 
 #[derive(Debug, Clone)]
 pub enum MoveEffect {

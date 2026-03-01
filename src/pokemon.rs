@@ -8,6 +8,7 @@ pub enum PokemonType {
     Fire,
     Water,
     Grass,
+    Electric,
 }
 
 #[derive(Debug, Clone)]
