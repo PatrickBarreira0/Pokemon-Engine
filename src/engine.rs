@@ -22,9 +22,28 @@ impl BattleEngine {
         }
     }
 
+    pub fn process_end_of_turn(pokemon: &mut Pokemon) {
+        match &pokemon.status {
+            Some(Status::Burn) => {
+                let burn_damage = (pokemon.max_hp / 8).max(1); // .max(1) ensures burn always deals at least 1 damage
+                println!("> {} is hurt by its burn!", pokemon.name);
+                pokemon.take_damage(burn_damage);
+            }
+            _ => {} // for now, do nothing
+        }
+    }
+
     pub fn execute_move(attacker: &mut Pokemon, defender: &mut Pokemon, move_index: usize) {
         if attacker.is_fainted() || defender.is_fainted() {
             return;
+        }
+
+        if let Some(Status::Paralysis) = &attacker.status {
+            let roll: f32 = rand::random();
+            if roll < 0.25 {
+                println!("> {} is paralyzed and can't move!", attacker.name);
+                return;
+            }
         }
 
         // clone the move so we don't hold a borrow on attacker while we also need to mutate defender
