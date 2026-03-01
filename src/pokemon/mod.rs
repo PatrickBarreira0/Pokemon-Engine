@@ -21,6 +21,7 @@ pub struct Move {
     pub effects: Vec<MoveEffect>,
     pub max_pp: u32,
     pub current_pp: u32,
+    pub accuracy: u32,
 }
 
 #[derive(Debug, Clone)]

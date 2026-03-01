@@ -40,6 +40,7 @@ pub fn load_moves(path: &str) -> HashMap<String, Move> {
             effects,
             max_pp: move_data.pp,
             current_pp: move_data.pp,
+            accuracy: move_data.accuracy,
         };
 
         moves.insert(move_data.name, complete_move);

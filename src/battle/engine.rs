@@ -72,6 +72,12 @@ impl BattleEngine {
         let used_move = attacker.moves[move_index].clone();
         println!("\n> {} used {}! ({}/{} PP)", attacker.name, used_move.name, used_move.current_pp, used_move.max_pp);
 
+        let accuracy_roll: f32 = rand::random::<f32>() * 100.0;
+        if accuracy_roll >= used_move.accuracy as f32 {
+            println!("> {}'s {} missed!", attacker.name, used_move.name);
+            return;
+        }
+        
         for effect in &used_move.effects { //loop over effects
             match effect {
                 MoveEffect::Damage => {
