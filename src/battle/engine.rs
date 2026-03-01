@@ -59,6 +59,11 @@ impl BattleEngine {
             return;
         }
 
+        if attacker.moves[move_index].current_pp == 0 {
+            println!("> {} has no PP left for {}!", attacker.name, attacker.moves[move_index].name);
+            return;
+        }
+
         if let Some(Status::Paralysis) = &attacker.status {
             let roll: f32 = rand::random();
             if roll < 0.25 {
@@ -66,10 +71,11 @@ impl BattleEngine {
                 return;
             }
         }
+        attacker.moves[move_index].current_pp -= 1;
 
         // clone the move so we don't hold a borrow on attacker while we also need to mutate defender
         let used_move = attacker.moves[move_index].clone();
-        println!("\n> {} used {}!", attacker.name, used_move.name);
+        println!("\n> {} used {}! ({}/{} PP)", attacker.name, used_move.name, used_move.current_pp, used_move.max_pp);
 
         for effect in &used_move.effects { //loop over effects
             match effect {
@@ -84,7 +90,7 @@ impl BattleEngine {
                     let defense_multiplier = Self::stage_to_multiplier(defender.stat_stages.defense);
                     let effective_attack   = attacker.attack as f32 * attack_multiplier;
                     let effective_defense  = defender.defense as f32 * defense_multiplier;
-                    
+
                     let damage = (used_move.power as f32
                         * (effective_attack / effective_defense)
                         * type_multiplier

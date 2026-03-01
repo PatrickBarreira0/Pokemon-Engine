@@ -3,5 +3,6 @@
     { "name": "Vine Whip",    "type": "Grass",    "power": 45, "accuracy": 100, "pp": 25 },
     { "name": "Thunder Wave", "type": "Electric", "power": 0,  "accuracy": 90,  "pp": 20 },
     { "name": "Ember",        "type": "Fire",     "power": 40, "accuracy": 100, "pp": 25 },
-    { "name": "Water Gun",    "type": "Water",    "power": 40, "accuracy": 100, "pp": 25 }
+    { "name": "Water Gun",    "type": "Water",    "power": 40, "accuracy": 100, "pp": 25 },
+    { "name": "Growl",       "type": "Normal",   "power": 0,  "accuracy": 100, "pp": 40 }
   ]

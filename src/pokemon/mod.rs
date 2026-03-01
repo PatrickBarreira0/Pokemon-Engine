@@ -19,6 +19,8 @@ pub struct Move {
     pub power: u32,
     pub move_type: PokemonType,
     pub effects: Vec<MoveEffect>,
+    pub max_pp: u32,
+    pub current_pp: u32,
 }
 
 #[derive(Debug, Clone)]

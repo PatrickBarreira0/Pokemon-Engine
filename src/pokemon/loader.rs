@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use crate::pokemon::{Pokemon};
+use crate::pokemon::Pokemon;
 use crate::moves::loader::load_moves;
 
 #[derive(Debug, Deserialize)]

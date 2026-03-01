@@ -38,6 +38,8 @@ pub fn load_moves(path: &str) -> HashMap<String, Move> {
             power: move_data.power,
             move_type,
             effects,
+            max_pp: move_data.pp,
+            current_pp: move_data.pp,
         };
 
         moves.insert(move_data.name, complete_move);
