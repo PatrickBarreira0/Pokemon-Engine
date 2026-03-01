@@ -28,7 +28,6 @@ pub fn parse_type(type_str: &str) -> crate::pokemon::PokemonType {
         "Dragon"   => crate::pokemon::PokemonType::Dragon,
         "Dark"     => crate::pokemon::PokemonType::Dark,
         "Steel"    => crate::pokemon::PokemonType::Steel,
-        "Fairy"    => crate::pokemon::PokemonType::Fairy,
         _          => panic!("Unknown type: {}", type_str),
     }
 }
@@ -91,11 +90,9 @@ pub fn get_type_multiplier(attacker_type: &PokemonType, defender_type: &PokemonT
         (PokemonType::Fighting, PokemonType::Flying) => 0.5,
         (PokemonType::Fighting, PokemonType::Psychic) => 0.5,
         (PokemonType::Fighting, PokemonType::Bug) => 0.5,
-        (PokemonType::Fighting, PokemonType::Fairy) => 0.5,
         (PokemonType::Fighting, PokemonType::Ghost) => 0.0,
 
         (PokemonType::Poison, PokemonType::Grass) => 2.0,
-        (PokemonType::Poison, PokemonType::Fairy) => 2.0,
         (PokemonType::Poison, PokemonType::Poison) => 0.5,
         (PokemonType::Poison, PokemonType::Ground) => 0.5,
         (PokemonType::Poison, PokemonType::Rock) => 0.5,
@@ -133,7 +130,6 @@ pub fn get_type_multiplier(attacker_type: &PokemonType, defender_type: &PokemonT
         (PokemonType::Bug, PokemonType::Flying) => 0.5,
         (PokemonType::Bug, PokemonType::Ghost) => 0.5,
         (PokemonType::Bug, PokemonType::Steel) => 0.5,
-        (PokemonType::Bug, PokemonType::Fairy) => 0.5,
 
         (PokemonType::Rock, PokemonType::Fire) => 2.0,
         (PokemonType::Rock, PokemonType::Ice) => 2.0,
@@ -145,33 +141,25 @@ pub fn get_type_multiplier(attacker_type: &PokemonType, defender_type: &PokemonT
 
         (PokemonType::Ghost, PokemonType::Psychic) => 2.0,
         (PokemonType::Ghost, PokemonType::Ghost) => 2.0,
+        (PokemonType::Ghost, PokemonType::Steel) => 0.5,
         (PokemonType::Ghost, PokemonType::Dark) => 0.5,
         (PokemonType::Ghost, PokemonType::Normal) => 0.0,
 
         (PokemonType::Dragon, PokemonType::Dragon) => 2.0,
         (PokemonType::Dragon, PokemonType::Steel) => 0.5,
-        (PokemonType::Dragon, PokemonType::Fairy) => 0.0,
 
         (PokemonType::Dark, PokemonType::Psychic) => 2.0,
         (PokemonType::Dark, PokemonType::Ghost) => 2.0,
         (PokemonType::Dark, PokemonType::Fighting) => 0.5,
         (PokemonType::Dark, PokemonType::Dark) => 0.5,
-        (PokemonType::Dark, PokemonType::Fairy) => 0.5,
+        (PokemonType::Dark, PokemonType::Steel) => 0.5,
 
         (PokemonType::Steel, PokemonType::Ice) => 2.0,
         (PokemonType::Steel, PokemonType::Rock) => 2.0,
-        (PokemonType::Steel, PokemonType::Fairy) => 2.0,
         (PokemonType::Steel, PokemonType::Fire) => 0.5,
         (PokemonType::Steel, PokemonType::Water) => 0.5,
         (PokemonType::Steel, PokemonType::Electric) => 0.5,
         (PokemonType::Steel, PokemonType::Steel) => 0.5,
-
-        (PokemonType::Fairy, PokemonType::Fighting) => 2.0,
-        (PokemonType::Fairy, PokemonType::Dragon) => 2.0,
-        (PokemonType::Fairy, PokemonType::Dark) => 2.0,
-        (PokemonType::Fairy, PokemonType::Fire) => 0.5,
-        (PokemonType::Fairy, PokemonType::Poison) => 0.5,
-        (PokemonType::Fairy, PokemonType::Steel) => 0.5,
 
         _ => 1.0,
     }

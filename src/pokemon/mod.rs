@@ -23,7 +23,6 @@ pub enum PokemonType {
     Dragon,
     Dark,
     Steel,
-    Fairy,
 }
 
 #[derive(Debug, Clone)]
@@ -72,6 +71,7 @@ impl StatStages {
 pub struct Pokemon {
     pub name: String,
     pub primary_type: PokemonType,
+    pub secondary_type: Option<PokemonType>,
     pub max_hp: u32,
     pub current_hp: u32,
     pub attack: u32,
@@ -84,10 +84,11 @@ pub struct Pokemon {
 }
 
 impl Pokemon {
-    pub fn new(name: &str, p_type: PokemonType, max_hp: u32, attack: u32, defense: u32, speed: u32, moves: Vec<Move>) -> Self {
+    pub fn new(name: &str, primary_type: PokemonType, secondary_type: Option<PokemonType>, max_hp: u32, attack: u32, defense: u32, speed: u32, moves: Vec<Move>) -> Self {
         Self {
             name: name.to_string(),
-            primary_type: p_type,
+            primary_type,
+            secondary_type,
             max_hp,
             current_hp: max_hp,
             attack,

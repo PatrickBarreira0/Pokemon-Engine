@@ -7,6 +7,7 @@ pub struct PokemonData {
     pub name: String,
     #[serde(rename = "type")]
     pub pokemon_type: String,
+    pub secondary_type: Option<String>,
     pub hp: u32,
     pub attack: u32,
     pub defense: u32,
@@ -33,20 +34,24 @@ pub fn load_pokemon(pokemon_path: &str, moves_path: &str) -> Vec<Pokemon> {
                 .clone()
         }).collect();
 
-        let pokemon_type = crate::types::parse_type(&data.pokemon_type);
+        let primary_type = crate::types::parse_type(&data.pokemon_type);
+        let secondary_type = data.secondary_type
+            .as_deref()
+            .map(crate::types::parse_type);
 
-        let pokemon = Pokemon::new(
-            &data.name,
-            pokemon_type,
-            data.hp,
-            data.attack,
-            data.defense,
-            data.speed,
-            moves,
-        );
-
-        pokemon_list.push(pokemon);
+            let pokemon = Pokemon::new(
+                &data.name,
+                primary_type,
+                secondary_type,
+                data.hp,
+                data.attack,
+                data.defense,
+                data.speed,
+                moves,
+            );
+    
+            pokemon_list.push(pokemon);
+        }
+    
+        pokemon_list
     }
-
-    pokemon_list
-}

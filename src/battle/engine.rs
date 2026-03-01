@@ -68,21 +68,29 @@ impl BattleEngine {
             return;
         }
         
-        for effect in &used_move.effects { //loop over effects
+        for effect in &used_move.effects { // loop over effects
             match effect {
                 MoveEffect::Damage => {
-                    let type_multiplier = get_type_multiplier(&used_move.move_type, &defender.primary_type);
-                    let stab_multiplier = if used_move.move_type == attacker.primary_type {
+                    let m1 = get_type_multiplier(&used_move.move_type, &defender.primary_type);
+                    let m2 = match &defender.secondary_type {
+                        Some(t) => get_type_multiplier(&used_move.move_type, t),
+                        None    => 1.0, // single-type pokemon: second multiplier is neutral
+                    };
+                    let type_multiplier = m1 * m2;
+
+                    let stab_multiplier = if used_move.move_type == attacker.primary_type
+                        || attacker.secondary_type.as_ref().map_or(false, |t| t == &used_move.move_type)
+                    {
                         1.5
                     } else {
                         1.0
                     };
+
                     let attack_multiplier  = Self::stage_to_multiplier(attacker.stat_stages.attack);
                     let defense_multiplier = Self::stage_to_multiplier(defender.stat_stages.defense);
                     let effective_attack   = attacker.attack as f32 * attack_multiplier;
                     let effective_defense  = defender.defense as f32 * defense_multiplier;
-
-                    let level_factor = (2 * attacker.level / 5 + 2) as f32;
+                    let level_factor  = (2 * attacker.level / 5 + 2) as f32;
                     let random_factor = 0.85 + rand::random::<f32>() * 0.15;
                     let damage = (level_factor
                         * used_move.power as f32
@@ -92,11 +100,13 @@ impl BattleEngine {
                         * stab_multiplier
                         * type_multiplier
                         * random_factor;
-                
-                    if type_multiplier > 1.0 { println!("It's super effective!"); }
-                    else if type_multiplier < 1.0 { println!("It's not very effective..."); }
+
+                    if type_multiplier == 0.0      { println!("It has no effect!");        }
+                    else if type_multiplier > 1.0  { println!("It's super effective!");    }
+                    else if type_multiplier < 1.0  { println!("It's not very effective..."); }
+
                     if stab_multiplier > 1.0 { println!("*STAB bonus applied!*"); }
-                
+
                     defender.take_damage(damage as u32);
                     println!("> {} took {} damage!", defender.name, damage as u32);
                 }
