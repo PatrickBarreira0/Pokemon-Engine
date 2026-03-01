@@ -25,6 +25,103 @@ pub enum PokemonType {
 }
 
 #[derive(Debug, Clone)]
+pub enum Nature {
+    Hardy,   // neutral
+    Lonely,  // +Atk, -Def
+    Brave,   // +Atk, -Spe
+    Adamant, // +Atk, -SpA
+    Naughty, // +Atk, -SpD
+    Bold,    // +Def, -Atk
+    Docile,  // neutral
+    Relaxed, // +Def, -Spe
+    Impish,  // +Def, -SpA
+    Lax,     // +Def, -SpD
+    Timid,   // +Spe, -Atk
+    Hasty,   // +Spe, -Def
+    Serious, // neutral
+    Jolly,   // +Spe, -SpA
+    Naive,   // +Spe, -SpD
+    Modest,  // +SpA, -Atk
+    Mild,    // +SpA, -Def
+    Quiet,   // +SpA, -Spe
+    Bashful, // neutral
+    Rash,    // +SpA, -SpD
+    Calm,    // +SpD, -Atk
+    Gentle,  // +SpD, -Def
+    Sassy,   // +SpD, -Spe
+    Careful, // +SpD, -SpA
+    Quirky,  // neutral
+}
+
+pub fn nature_multiplier(nature: &Nature, stat: &Stat) -> f32 {
+    let (boosted, lowered) = match nature {
+        Nature::Hardy   => (Stat::Attack,    Stat::Attack),    // neutral
+        Nature::Lonely  => (Stat::Attack,    Stat::Defense),
+        Nature::Brave   => (Stat::Attack,    Stat::Speed),
+        Nature::Adamant => (Stat::Attack,    Stat::SpAttack),
+        Nature::Naughty => (Stat::Attack,    Stat::SpDefense),
+        Nature::Bold    => (Stat::Defense,   Stat::Attack),
+        Nature::Docile  => (Stat::Defense,   Stat::Defense),   // neutral
+        Nature::Relaxed => (Stat::Defense,   Stat::Speed),
+        Nature::Impish  => (Stat::Defense,   Stat::SpAttack),
+        Nature::Lax     => (Stat::Defense,   Stat::SpDefense),
+        Nature::Timid   => (Stat::Speed,     Stat::Attack),
+        Nature::Hasty   => (Stat::Speed,     Stat::Defense),
+        Nature::Serious => (Stat::Speed,     Stat::Speed),     // neutral
+        Nature::Jolly   => (Stat::Speed,     Stat::SpAttack),
+        Nature::Naive   => (Stat::Speed,     Stat::SpDefense),
+        Nature::Modest  => (Stat::SpAttack,  Stat::Attack),
+        Nature::Mild    => (Stat::SpAttack,  Stat::Defense),
+        Nature::Quiet   => (Stat::SpAttack,  Stat::Speed),
+        Nature::Bashful => (Stat::SpAttack,  Stat::SpAttack),  // neutral
+        Nature::Rash    => (Stat::SpAttack,  Stat::SpDefense),
+        Nature::Calm    => (Stat::SpDefense, Stat::Attack),
+        Nature::Gentle  => (Stat::SpDefense, Stat::Defense),
+        Nature::Sassy   => (Stat::SpDefense, Stat::Speed),
+        Nature::Careful => (Stat::SpDefense, Stat::SpAttack),
+        Nature::Quirky  => (Stat::SpDefense, Stat::SpDefense), // neutral
+    };
+
+    // since Stat doesn't derive PartialEq, we match on pairs of variants directly
+    let stat_matches = |a: &Stat, b: &Stat| matches!(
+        (a, b),
+        (Stat::Attack,    Stat::Attack)    |
+        (Stat::Defense,   Stat::Defense)   |
+        (Stat::Speed,     Stat::Speed)     |
+        (Stat::SpAttack,  Stat::SpAttack)  |
+        (Stat::SpDefense, Stat::SpDefense)
+    );
+
+    if stat_matches(stat, &boosted) && !stat_matches(stat, &lowered) {
+        1.1
+    } else if stat_matches(stat, &lowered) && !stat_matches(stat, &boosted) {
+        0.9
+    } else {
+        1.0 // neutral natures: boosted == lowered so both conditions above are false
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct IVs {
+    pub hp: u32,
+    pub attack: u32,
+    pub defense: u32,
+    pub sp_attack: u32,
+    pub sp_defense: u32,
+    pub speed: u32,
+}
+
+#[derive(Debug, Clone)]
+pub struct EVs {
+    pub hp: u32,
+    pub attack: u32,
+    pub defense: u32,
+    pub sp_attack: u32,
+    pub sp_defense: u32,
+    pub speed: u32,
+}
+
+#[derive(Debug, Clone)]
 pub struct Move {
     pub name: String,
     pub power: u32,
@@ -90,6 +187,7 @@ impl Pokemon {
         name: &str,
         primary_type: PokemonType,
         secondary_type: Option<PokemonType>,
+        level: u32,
         max_hp: u32,
         attack: u32,
         defense: u32,
@@ -112,7 +210,7 @@ impl Pokemon {
             moves,
             status: None,
             stat_stages: StatStages::new(),
-            level: 50,
+            level,
         }
     }
 
