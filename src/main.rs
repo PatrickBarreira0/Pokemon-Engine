@@ -9,7 +9,9 @@ use pokemon::loader::load_pokemon;
 use std::io::{self, Write};
 
 fn main() {
+
     let all_pokemon = load_pokemon("data/pokemon.json", "data/moves.json");
+
     let bulbasaur = all_pokemon.iter()
         .find(|p| p.name == "Bulbasaur")
         .expect("Bulbasaur not found in pokemon.json")
@@ -18,7 +20,9 @@ fn main() {
         .find(|p| p.name == "Charmander")
         .expect("Charmander not found in pokemon.json")
         .clone();
+
     let mut engine = BattleEngine::new(bulbasaur, charmander);
+    
     println!("Battle start! {} vs {}", engine.player.name, engine.opponent.name);
     loop {
         println!("\n--- NEW TURN ---");
