@@ -80,6 +80,7 @@ pub struct Pokemon {
     pub moves: Vec<Move>,
     pub status: Option<Status>,
     pub stat_stages: StatStages,
+    pub level: u32
 }
 
 impl Pokemon {
@@ -95,6 +96,7 @@ impl Pokemon {
             moves,
             status: None,
             stat_stages: StatStages::new(),
+            level: 50,
         }
     }
 

@@ -82,17 +82,23 @@ impl BattleEngine {
                     let effective_attack   = attacker.attack as f32 * attack_multiplier;
                     let effective_defense  = defender.defense as f32 * defense_multiplier;
 
-                    let damage = (used_move.power as f32
+                    let level_factor = (2 * attacker.level / 5 + 2) as f32;
+                    let random_factor = 0.85 + rand::random::<f32>() * 0.15;
+                    let damage = (level_factor
+                        * used_move.power as f32
                         * (effective_attack / effective_defense)
+                        / 50.0
+                        + 2.0)
+                        * stab_multiplier
                         * type_multiplier
-                        * stab_multiplier) as u32;
-
+                        * random_factor;
+                
                     if type_multiplier > 1.0 { println!("It's super effective!"); }
                     else if type_multiplier < 1.0 { println!("It's not very effective..."); }
                     if stab_multiplier > 1.0 { println!("*STAB bonus applied!*"); }
-
-                    defender.take_damage(damage);
-                    println!("> {} took {} damage!", defender.name, damage);
+                
+                    defender.take_damage(damage as u32);
+                    println!("> {} took {} damage!", defender.name, damage as u32);
                 }
 
                 MoveEffect::ApplyStatus { status, chance } => {
