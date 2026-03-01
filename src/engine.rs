@@ -40,7 +40,10 @@ impl BattleEngine {
                     } else {
                         1.0
                     };
-                    let damage = (used_move.power as f32 * type_multiplier * stab_multiplier) as u32;
+                    let damage = (used_move.power as f32
+                        * (attacker.attack as f32 / defender.defense as f32)
+                        * type_multiplier
+                        * stab_multiplier) as u32;
 
                     if type_multiplier > 1.0 { println!("It's super effective!"); }
                     else if type_multiplier < 1.0 { println!("It's not very effective..."); }
