@@ -1,5 +1,4 @@
-// src/pokemon/mod.rs
-use crate::moves::MoveEffect;
+use crate::moves::{MoveEffect, MoveCategory};
 use crate::types::Status;
 use crate::moves::Stat;
 pub mod loader;
@@ -30,6 +29,7 @@ pub struct Move {
     pub name: String,
     pub power: u32,
     pub move_type: PokemonType,
+    pub category: MoveCategory,
     pub effects: Vec<MoveEffect>,
     pub max_pp: u32,
     pub current_pp: u32,
@@ -58,11 +58,11 @@ impl StatStages {
 
     pub fn modify(&mut self, stat: &Stat, amount: i32) {
         match stat {
-            Stat::Attack     => self.attack     = (self.attack     + amount).clamp(-6, 6),
-            Stat::Defense    => self.defense    = (self.defense    + amount).clamp(-6, 6),
-            Stat::Speed      => self.speed      = (self.speed      + amount).clamp(-6, 6),
-            Stat::SpAttack   => self.sp_attack  = (self.sp_attack  + amount).clamp(-6, 6),
-            Stat::SpDefense  => self.sp_defense = (self.sp_defense + amount).clamp(-6, 6),
+            Stat::Attack    => self.attack     = (self.attack     + amount).clamp(-6, 6),
+            Stat::Defense   => self.defense    = (self.defense    + amount).clamp(-6, 6),
+            Stat::Speed     => self.speed      = (self.speed      + amount).clamp(-6, 6),
+            Stat::SpAttack  => self.sp_attack  = (self.sp_attack  + amount).clamp(-6, 6),
+            Stat::SpDefense => self.sp_defense = (self.sp_defense + amount).clamp(-6, 6),
         }
     }
 }
@@ -76,15 +76,28 @@ pub struct Pokemon {
     pub current_hp: u32,
     pub attack: u32,
     pub defense: u32,
+    pub sp_attack: u32,
+    pub sp_defense: u32,
     pub speed: u32,
     pub moves: Vec<Move>,
     pub status: Option<Status>,
     pub stat_stages: StatStages,
-    pub level: u32
+    pub level: u32,
 }
 
 impl Pokemon {
-    pub fn new(name: &str, primary_type: PokemonType, secondary_type: Option<PokemonType>, max_hp: u32, attack: u32, defense: u32, speed: u32, moves: Vec<Move>) -> Self {
+    pub fn new(
+        name: &str,
+        primary_type: PokemonType,
+        secondary_type: Option<PokemonType>,
+        max_hp: u32,
+        attack: u32,
+        defense: u32,
+        sp_attack: u32,
+        sp_defense: u32,
+        speed: u32,
+        moves: Vec<Move>,
+    ) -> Self {
         Self {
             name: name.to_string(),
             primary_type,
@@ -93,6 +106,8 @@ impl Pokemon {
             current_hp: max_hp,
             attack,
             defense,
+            sp_attack,
+            sp_defense,
             speed,
             moves,
             status: None,

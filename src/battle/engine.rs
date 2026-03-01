@@ -1,5 +1,5 @@
 use crate::pokemon::{Pokemon, PokemonType};
-use crate::moves::{MoveEffect, Stat, StatTarget};
+use crate::moves::{MoveEffect, MoveCategory, Stat, StatTarget};
 use crate::types::{Status, get_type_multiplier};
 
 // handles all damage calculation, move execution, and status effect processing for individual pokemon actions
@@ -29,7 +29,7 @@ impl BattleEngine {
              5 => 3.50,
              6 => 4.00,
 
-            _ => 1.00,
+            _  => 1.00,
         }
     }
 
@@ -40,7 +40,7 @@ impl BattleEngine {
                 println!("> {} is hurt by its burn!", pokemon.name);
                 pokemon.take_damage(burn_damage);
             }
-            _ => {} // for now, do nothing
+            _ => {}
         }
     }
 
@@ -67,14 +67,13 @@ impl BattleEngine {
             println!("> {}'s {} missed!", attacker.name, used_move.name);
             return;
         }
-        
-        for effect in &used_move.effects { // loop over effects
+        for effect in &used_move.effects {
             match effect {
                 MoveEffect::Damage => {
                     let m1 = get_type_multiplier(&used_move.move_type, &defender.primary_type);
                     let m2 = match &defender.secondary_type {
                         Some(t) => get_type_multiplier(&used_move.move_type, t),
-                        None    => 1.0, // single-type pokemon: second multiplier is neutral
+                        None    => 1.0,
                     };
                     let type_multiplier = m1 * m2;
 
@@ -86,10 +85,20 @@ impl BattleEngine {
                         1.0
                     };
 
-                    let attack_multiplier  = Self::stage_to_multiplier(attacker.stat_stages.attack);
-                    let defense_multiplier = Self::stage_to_multiplier(defender.stat_stages.defense);
-                    let effective_attack   = attacker.attack as f32 * attack_multiplier;
-                    let effective_defense  = defender.defense as f32 * defense_multiplier;
+                    let (effective_attack, effective_defense) = match used_move.category {
+                        MoveCategory::Physical => {
+                            let atk = attacker.attack   as f32 * Self::stage_to_multiplier(attacker.stat_stages.attack);
+                            let def = defender.defense  as f32 * Self::stage_to_multiplier(defender.stat_stages.defense);
+                            (atk, def)
+                        }
+                        MoveCategory::Special => {
+                            let atk = attacker.sp_attack  as f32 * Self::stage_to_multiplier(attacker.stat_stages.sp_attack);
+                            let def = defender.sp_defense as f32 * Self::stage_to_multiplier(defender.stat_stages.sp_defense);
+                            (atk, def)
+                        }
+                        MoveCategory::Status => unreachable!("Status moves should not have a Damage effect"),
+                    };
+
                     let level_factor  = (2 * attacker.level / 5 + 2) as f32;
                     let random_factor = 0.85 + rand::random::<f32>() * 0.15;
                     let damage = (level_factor
@@ -101,9 +110,9 @@ impl BattleEngine {
                         * type_multiplier
                         * random_factor;
 
-                    if type_multiplier == 0.0      { println!("It has no effect!");        }
-                    else if type_multiplier > 1.0  { println!("It's super effective!");    }
-                    else if type_multiplier < 1.0  { println!("It's not very effective..."); }
+                    if type_multiplier == 0.0     { println!("It has no effect!");          }
+                    else if type_multiplier > 1.0 { println!("It's super effective!");      }
+                    else if type_multiplier < 1.0 { println!("It's not very effective..."); }
 
                     if stab_multiplier > 1.0 { println!("*STAB bonus applied!*"); }
 
@@ -113,7 +122,6 @@ impl BattleEngine {
 
                 MoveEffect::ApplyStatus { status, chance } => {
                     let roll: f32 = rand::random();
-
                     if roll < *chance {
                         if defender.status.is_none() {
                             println!("> {} was afflicted with {:?}!", defender.name, status);

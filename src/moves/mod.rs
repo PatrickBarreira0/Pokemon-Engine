@@ -4,6 +4,21 @@ pub mod loader;
 
 use crate::types::Status;
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum MoveCategory {
+    Physical,
+    Special,
+    Status,
+}
+
+pub fn parse_category(s: &str) -> MoveCategory {
+    match s {
+        "Physical" => MoveCategory::Physical,
+        "Special"  => MoveCategory::Special,
+        "Status"   => MoveCategory::Status,
+        other      => panic!("Unknown move category: {}", other),
+    }
+}
 
 #[derive(Debug, Clone)]
 pub enum MoveEffect {

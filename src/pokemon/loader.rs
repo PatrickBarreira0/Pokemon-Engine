@@ -11,6 +11,8 @@ pub struct PokemonData {
     pub hp: u32,
     pub attack: u32,
     pub defense: u32,
+    pub sp_attack: u32,
+    pub sp_defense: u32,
     pub speed: u32,
     pub moves: Vec<String>,
 }
@@ -34,24 +36,24 @@ pub fn load_pokemon(pokemon_path: &str, moves_path: &str) -> Vec<Pokemon> {
                 .clone()
         }).collect();
 
-        let primary_type = crate::types::parse_type(&data.pokemon_type);
-        let secondary_type = data.secondary_type
-            .as_deref()
-            .map(crate::types::parse_type);
+        let primary_type   = crate::types::parse_type(&data.pokemon_type);
+        let secondary_type = data.secondary_type.as_deref().map(crate::types::parse_type);
 
-            let pokemon = Pokemon::new(
-                &data.name,
-                primary_type,
-                secondary_type,
-                data.hp,
-                data.attack,
-                data.defense,
-                data.speed,
-                moves,
-            );
-    
-            pokemon_list.push(pokemon);
-        }
-    
-        pokemon_list
+        let pokemon = Pokemon::new(
+            &data.name,
+            primary_type,
+            secondary_type,
+            data.hp,
+            data.attack,
+            data.defense,
+            data.sp_attack,
+            data.sp_defense,
+            data.speed,
+            moves,
+        );
+
+        pokemon_list.push(pokemon);
     }
+
+    pokemon_list
+}
