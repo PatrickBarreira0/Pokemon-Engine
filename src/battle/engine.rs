@@ -85,39 +85,56 @@ impl BattleEngine {
                         1.0
                     };
 
+                    let is_crit = rand::random::<f32>() < (1.0 / 24.0);
+                    let critical = if is_crit { 2.0 } else { 1.0 };
+
                     let (effective_attack, effective_defense) = match used_move.category {
                         MoveCategory::Physical => {
-                            let atk = attacker.attack   as f32 * Self::stage_to_multiplier(attacker.stat_stages.attack);
-                            let def = defender.defense  as f32 * Self::stage_to_multiplier(defender.stat_stages.defense);
+                            // on a crit, attacker's negative attack stages are ignored (clamped to 0)
+                            // and defender's positive defense stages are ignored (clamped to 0)
+                            let atk_stage = if is_crit { attacker.stat_stages.attack.max(0)  } else { attacker.stat_stages.attack };
+                            let def_stage = if is_crit { defender.stat_stages.defense.min(0) } else { defender.stat_stages.defense };
+                            let atk = attacker.attack  as f32 * Self::stage_to_multiplier(atk_stage);
+                            let def = defender.defense as f32 * Self::stage_to_multiplier(def_stage);
                             (atk, def)
                         }
                         MoveCategory::Special => {
-                            let atk = attacker.sp_attack  as f32 * Self::stage_to_multiplier(attacker.stat_stages.sp_attack);
-                            let def = defender.sp_defense as f32 * Self::stage_to_multiplier(defender.stat_stages.sp_defense);
+                            let atk_stage = if is_crit { attacker.stat_stages.sp_attack.max(0)  } else { attacker.stat_stages.sp_attack };
+                            let def_stage = if is_crit { defender.stat_stages.sp_defense.min(0) } else { defender.stat_stages.sp_defense };
+                            let atk = attacker.sp_attack  as f32 * Self::stage_to_multiplier(atk_stage);
+                            let def = defender.sp_defense as f32 * Self::stage_to_multiplier(def_stage);
                             (atk, def)
                         }
                         MoveCategory::Status => unreachable!("Status moves should not have a Damage effect"),
                     };
 
-                    let level_factor  = (2 * attacker.level / 5 + 2) as f32;
+                    let burn = if matches!(&attacker.status, Some(Status::Burn))
+                        && used_move.category == MoveCategory::Physical
+                    {
+                        0.5
+                    } else {
+                        1.0
+                    };
+
+                    // step1: floor(2 * level / 5 + 2)
+                    let step1 = 2 * attacker.level / 5 + 2;
+                    // step2: floor(step1 * power * atk / def)
+                    let step2 = (step1 as f32 * used_move.power as f32 * effective_attack / effective_defense) as u32;
+                    // step3: floor(step2 / 50) + 2
+                    let step3 = step2 / 50 + 2;
+                    // final: floor(step3 * critical * random * stab * type * burn)
+                    // weather, targets, other modifiers stubbed as 1.0 for now
                     let random_factor = 0.85 + rand::random::<f32>() * 0.15;
-                    let damage = (level_factor
-                        * used_move.power as f32
-                        * (effective_attack / effective_defense)
-                        / 50.0
-                        + 2.0)
-                        * stab_multiplier
-                        * type_multiplier
-                        * random_factor;
+                    let damage = (step3 as f32 * critical * random_factor * stab_multiplier * type_multiplier * burn) as u32;
 
-                    if type_multiplier == 0.0     { println!("It has no effect!");          }
-                    else if type_multiplier > 1.0 { println!("It's super effective!");      }
-                    else if type_multiplier < 1.0 { println!("It's not very effective..."); }
+                    if type_multiplier == 0.0     { println!("It has no effect!");            }
+                    else if type_multiplier > 1.0 { println!("It's super effective!");        }
+                    else if type_multiplier < 1.0 { println!("It's not very effective...");   }
+                    if is_crit                    { println!("A critical hit!");               }
+                    if stab_multiplier > 1.0      { println!("*STAB bonus applied!*");        }
 
-                    if stab_multiplier > 1.0 { println!("*STAB bonus applied!*"); }
-
-                    defender.take_damage(damage as u32);
-                    println!("> {} took {} damage!", defender.name, damage as u32);
+                    defender.take_damage(damage);
+                    println!("> {} took {} damage!", defender.name, damage);
                 }
 
                 MoveEffect::ApplyStatus { status, chance } => {
