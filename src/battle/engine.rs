@@ -40,6 +40,11 @@ impl BattleEngine {
                 println!("> {} is hurt by its burn!", pokemon.name);
                 pokemon.take_damage(burn_damage);
             }
+            Some(Status::Poison) => {
+                let poison_damage = (pokemon.max_hp / 8).max(1);
+                println!("> {} is hurt by poison!", pokemon.name);
+                pokemon.take_damage(poison_damage);
+            }
             _ => {}
         }
     }
@@ -47,6 +52,23 @@ impl BattleEngine {
     pub fn execute_move(attacker: &mut Pokemon, defender: &mut Pokemon, move_index: usize) {
         if attacker.is_fainted() || defender.is_fainted() {
             return;
+        }
+        
+        if matches!(&attacker.status, Some(Status::Sleep)) {
+            match attacker.sleep_turns {
+                Some(0) => {
+                    attacker.status = None;
+                    attacker.sleep_turns = None;
+                    println!("> {} woke up!", attacker.name);
+                    // falls through and moves normally this turn
+                }
+                Some(n) => {
+                    attacker.sleep_turns = Some(n - 1);
+                    println!("> {} is fast asleep!", attacker.name);
+                    return;
+                }
+                None => {}
+            }
         }
 
         if let Some(Status::Paralysis) = &attacker.status {
@@ -140,9 +162,15 @@ impl BattleEngine {
                 MoveEffect::ApplyStatus { status, chance } => {
                     let roll: f32 = rand::random();
                     if roll < *chance {
+
                         if defender.status.is_none() {
                             println!("> {} was afflicted with {:?}!", defender.name, status);
                             defender.status = Some(status.clone());
+
+                            if matches!(status, Status::Sleep) {
+                                let turns = (rand::random::<f32>() * 3.0) as u32 + 1;
+                                defender.sleep_turns = Some(turns);
+                            }
                         } else {
                             println!("> But it failed — {} already has a status condition!", defender.name);
                         }

@@ -158,6 +158,7 @@ pub struct Pokemon {
     pub speed: u32,
     pub moves: Vec<Move>,
     pub status: Option<Status>,
+    pub sleep_turns: Option<u32>,
     pub stat_stages: StatStages,
     pub level: u32,
 }
@@ -189,6 +190,7 @@ impl Pokemon {
             speed,
             moves,
             status: None,
+            sleep_turns: None,
             stat_stages: StatStages::new(),
             level,
         }
